@@ -9,7 +9,6 @@ from faker.providers import BaseProvider, DynamicProvider
 # WHAT IS LEFT
 '''
 DUPLICATES: allow users to choose to create duplicates
-GENERIC DATA: generate generic data that will be provided from a list 
 '''
 
 def fake_data(rows):
@@ -65,17 +64,16 @@ def fake_data_uploaded(data, rows):
 
 header = [] # column names
 columnType = [] 
-#csvRows = []
 def main():
     user_input = input("Upload data or enter column and type? (upload or manual) ")
-    numRows = input("How many rows would you like generated? ")
+    numRows = int(input("How many rows would you like generated? "))
     if user_input == "manual":
         while True: # Get user input until user quits
             column_name = input("Enter column name or quit: ")
             if column_name == "quit":
                 break
             header.append(column_name)
-            column_type = input("Enter type: ")
+            column_type = input("Enter type (int, uuid, between 2 dates, date time, first name): ")
             columnType.append(column_type)
         fake_data(numRows)
         #print(columns)
