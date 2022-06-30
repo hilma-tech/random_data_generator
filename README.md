@@ -1,4 +1,4 @@
-# random_data_generator
+#Random Data Generator
 
 To use this application you can either upload a csv file that has data that you want to use to generate random data or you can manually 
 input data types and the program will generate for you
