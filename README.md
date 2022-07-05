@@ -9,5 +9,5 @@ table | column | date_type | unique | content
 
 Make as many columns as you need
 
-Once csv is created put the exact file location into the config file and then run the program and check the working directory for the newly created csv file which is called {table name}.csv
+Once the csv is created put the exact file location into the config file and then run the program and check the working directory for the newly created csv file which is called {table name}.csv
 
