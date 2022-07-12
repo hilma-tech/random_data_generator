@@ -1,5 +1,8 @@
 # Random Data Generator
 
+PROGRAM RUNS ONCE THE EXE IS CLICKED DO NOT CLOSE THE CMD WINDOW
+Download the application and the config file OR download all the files and make the python environment and run the python program with the config file
+
 Create a csv file in the format:
 
 table | column | date_type | unique | content 
@@ -12,7 +15,7 @@ Make as many columns as you need and write as many tables as you need
 Once the csv is created put the exact file location into the config file and then run the program and check the working directory for the newly created csv file which is called {table name}.csv
 
 Link to make own csv file
-https://docs.google.com/spreadsheets/d/1qrj5qgR5Nt9fVzN4rNuI6r_-CUFUxOiYcbjLMKsKC5Y/edit?usp=sharing
+shorturl.at/jlqWX
 
 Once csv file is made download it as a csv file and put the path to the file in the config file and run the program
 Check the working directory once the program runs to see the files
