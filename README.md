@@ -2,7 +2,7 @@
 
 PROGRAM RUNS ONCE THE EXE IS CLICKED DO NOT CLOSE THE CMD WINDOW
 
-Download the application and the config file OR download all the files and make the python environment and run the python program with the config file
+Open the "dist" file and run the application OR make the python environment and run the python program with the config file
 
 Create a csv file in the format:
 
