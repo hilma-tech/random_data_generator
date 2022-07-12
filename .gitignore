@@ -1,3 +1,5 @@
 generate_data_jupyter.ipynb
 dim_player.csv
 fake_data_export.csv
+dim_caretaker.csv
+fact_session.csv
