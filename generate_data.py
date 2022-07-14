@@ -4,6 +4,7 @@ from functools import partial
 import datetime
 from faker import Faker
 import configparser
+import logging
 from faker.providers import BaseProvider
 
 def child_table_generate(numIDs, numIndx):
@@ -11,15 +12,15 @@ def child_table_generate(numIDs, numIndx):
     id_col = []
     index_col = []
     id_number = 1
-    while(id_number != numIDs+1):
-        duplicates = fake.random_int(1, numIndx)
+    while(id_number != numIDs+1): # while loop goes up to the number of id's in the parent table
+        duplicates = fake.random_int(1, numIndx) # random number of rows is generated
         for _ in range(duplicates):
             id_col.append(id_number)
         id_number += 1
     index_col.append(1)
     counter = 1
-    for i in range(1, len(id_col)):
-        if id_col[i-1] != id_col[i]:
+    for i in range(1, len(id_col)): 
+        if id_col[i-1] != id_col[i]: # checks if the previous element is the same as the last and start the counter again or adds to it
             index_col.append(1)
             counter = 1
         else:
@@ -27,7 +28,7 @@ def child_table_generate(numIDs, numIndx):
             index_col.append(counter)
     return id_col, index_col, len(id_col)
 
-def consec_dates(datesArr, startDate):
+def consec_dates(datesArr, startDate): # adds 1 to the date 
     return datesArr[-1] + datetime.timedelta(days=1) if len(datesArr) != 0 else startDate
     
 def consec_datetimes(startDate, rows):
@@ -35,7 +36,7 @@ def consec_datetimes(startDate, rows):
     temp_time = []
     unix_start_time = datetime.datetime.timestamp(startDate) #convert it to unix timestamp to generate random times
     temp_time.append(datetime.datetime.fromtimestamp(unix_start_time))
-    next_day = unix_start_time
+    next_day = unix_start_time # generate random datetimes using unix time stamp since it is an integer and faster than using datetime library
     for _ in range(rows):
         next_day += 60*60*24
         next_day += fake.random_int(1, 86399) #this is how many seconds are in a day so it can generate between midnight and next midnight
@@ -60,6 +61,7 @@ class DataTypeProvider(BaseProvider):
         temp_data = []
 
         # Dictionary that holds possible inputs from the user and makes them unique depending on if the user wants unique values
+        # partial function is used so that when I call the function in the for loop below it will automatically send the argument
         switcher = {
             "int": partial(fake.unique.random_int, min, max) if uniqueCell=="yes" else partial(fake.random_int, min, max),
             "uuid": fake.unique.uuid4 if uniqueCell=="yes" else fake.uuid4,
@@ -98,31 +100,33 @@ endDate = datetime.datetime.now()
 
 def create_csv():
     
-    for j in range(len(header)):
+    for j in range(len(header)): # loop through all the tables that are supposed to be created
 
         file_data = []
         rows = 0
         df = pd.DataFrame(list()) # Create a new csv file that will contain the randomly generated data 
-        df.to_csv(f"{table_name[j]}.csv")
+        df.to_csv(f"{table_name[j]}.csv") # write nothing to the csv file with the name of the table
 
-        standardized = [ element.lower() for element in unique[j]] #lowercase all the elements just in case nothing extra
+        standardized = [ element.lower() for element in unique[j]] # lowercase all the elements just in case nothing extra
 
+        # try catch depending on if there is an id counter or if the number of rows is random everytime 
         try:
-            parent_id_loc = standardized.index('parent_id')    
-            index_spot = standardized.index('index')
+            parent_id_loc = standardized.index('parent_id') # finds the index of the parent_id
+            index_spot = standardized.index('index') # finds the index of the index
+            # generates 2 columns based on the parameters provided in the start and end columns 
             id_col, index_col, rows = child_table_generate(int(starter[j][parent_id_loc]), int(end[j][index_spot]))
-            file_data.append([i for i in range(1, rows+1)])
+            file_data.append([i for i in range(1, rows+1)]) # creates the column of id's dependent on the length of the random column lengths
             file_data.append(id_col)
             file_data.append(index_col)
-            rowStart = 3
+            rowStart = 3 # number that for loop starts at because this takes care of the first 3 rows 
         except:
-            rows = int(end[j][0])
-            file_data.append([i for i in range(1, rows+1) ])
-            rowStart = 1
+            rows = int(end[j][0]) # gets the end number saying how many rows
+            file_data.append([i for i in range(1, rows+1) ]) # creates a column based on how many rows user wants
+            rowStart = 1 # this takes care of the first row so we skip it
         
-        for i in range(rowStart,len(header[j])):
+        for i in range(rowStart,len(header[j])): # loop through each column and create the array that will have the random data
 
-            #Call necessary methods to get desire output       
+            # Call necessary methods to get desire output       
             if(columnDataType[j][i].lower() == 'int'): # this is a range 
                 min = int(starter[j][i])
                 max = int(end[j][i])
@@ -137,13 +141,13 @@ def create_csv():
             elif(columnDataType[j][i].lower() == 'string'): # strings are associated with different calls related to the content column
                 file_data.append(fake_data(columnDataType[j][i], rows, contentCell=starter[j][i].lower(), uniqueCell=unique[j][i].lower()))
 
-            elif(columnDataType[j][i].lower() == 'timestamp'): #separate dates and then call the method to generate the dates
-                year, month, day = map(int, starter[j][i].split('/'))
+            elif(columnDataType[j][i].lower() == 'timestamp'): # separate dates and then call the method to generate the dates
+                year, month, day = map(int, starter[j][i].split('/')) # split the data based on slashes in the date
                 startDate = datetime.datetime(year, month, day)
                 year, month, day = map(int, end[j][i].split('/'))
                 endDate = datetime.datetime(year, month, day)
                 if(unique[j][i].lower()=='consecutive'): 
-                    if((endDate - startDate).days < rows): 
+                    if((endDate - startDate).days < rows): # if the number of days between the 2 dates is less than the number of rows quit
                         print("Number of days is less than desired amount of rows for consecutive dates!")
                         quit()
                     file_data.append(consec_datetimes(startDate, rows))
@@ -160,7 +164,7 @@ def create_csv():
                         quit()
                 file_data.append(fake_data(columnDataType[j][i], rows, startDate, endDate, uniqueCell=unique[j][i].lower()))
             else:
-                continue
+                continue # other cases have already been taken care of in the try catch and do not need to be done in this for loop
         all_data = list(zip(*file_data)) #zips the whole file so that all the column arrays turn into rows
         df = pd.DataFrame(all_data) # inserts the zipped array into data frame
         df.to_csv(f"{table_name[j]}.csv", index=False, header=header[j]) # writes whole file to csv
@@ -185,8 +189,11 @@ def parse_data():
     unique = np.array(data['unique'].values)
     starter = np.array(data['start'].values)
     end = np.array(data['end'].values)
+
+    # finds where all the nans are in a file and provides it in a list format
     nans_in_file = np.where(pd.isna(table_name))[0].tolist()
 
+    # use the nans_in_file to split the array and make a new list filled with lists of the split data
     table_name = np.split(table_name, nans_in_file)
     table_name = [table[1] for table in table_name]
 
@@ -205,6 +212,7 @@ def parse_data():
     end = np.split(end, nans_in_file)
     end = [element.tolist() for element in end]
 
+    #get rid of the nans in the first spot of each element except the first one
     for i in range(1,len(header)):
         header[i] = header[i][1:]
         columnDataType[i] = columnDataType[i][1:]
@@ -212,12 +220,19 @@ def parse_data():
         starter[i] = starter[i][1:]
         end[i] = end[i][1:]
 
+
 def main():
     print("The program will take a couple seconds to generate the data please wait")
-    parse_data()
-    create_csv()
-    
+    try:
+        parse_data()
+        create_csv()
+    except Exception as Argument:
+        print("An error has occured, please check the working directing for the error file to see what the error was")
+        f = open("error_file.txt", "w")
+        f.write(str(Argument))
+        f.close()
 
+    
 
 if __name__ == "__main__":
     main()
