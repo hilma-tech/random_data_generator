@@ -1,1 +1,1 @@
-[Errno 2] No such file or directory: '.\\example_f_csv_file.csv'
+'utf-8' codec can't decode byte 0xe4 in position 520: invalid continuation byte

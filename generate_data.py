@@ -167,7 +167,7 @@ def create_csv():
                 continue # other cases have already been taken care of in the try catch and do not need to be done in this for loop
         all_data = list(zip(*file_data)) #zips the whole file so that all the column arrays turn into rows
         df = pd.DataFrame(all_data) # inserts the zipped array into data frame
-        df.to_csv(f"{table_name[j]}.csv", index=False, header=header[j]) # writes whole file to csv
+        df.to_csv(f"{table_name[j]}.csv", index=False, header=header[j], encoding='utf-8-sig') # writes whole file to csv
         print(f"Data generated! Check your working directory for the file {table_name[j]}.csv")
 
 # global variables
@@ -180,9 +180,9 @@ end = []
 def parse_data():
     global table_name, header, columnDataType, unique, starter, end, data
     config = configparser.ConfigParser()
-    config.read('data_configurator.ini') # read the config file
+    config.read('data_configurator.ini', encoding='utf-8-sig') # read the config file
     # take all the data from the csv file and put it into arrays to use later
-    data = pd.read_csv(config['Input Table']['file'])
+    data = pd.read_csv(config['Input Table']['file'], encoding='utf-8-sig')
     table_name = np.array(data['table'].values)
     header = np.array(data['column'].values)
     columnDataType = np.array(data['data_type'].values)
@@ -223,14 +223,14 @@ def parse_data():
 
 def main():
     print("The program will take a couple seconds to generate the data please wait")
-    try:
-        parse_data()
-        create_csv()
-    except Exception as Argument:
-        print("An error has occured, please check the working directing for the error file to see what the error was")
-        f = open("error_file.txt", "w")
-        f.write(str(Argument))
-        f.close()
+    #try:
+    parse_data()
+    create_csv()
+    # except Exception as Argument:
+    #     print("An error has occured, please check the working directing for the error file to see what the error was")
+    #     f = open("error_file.txt", "w")
+    #     f.write(str(Argument))
+    #     f.close()
 
     
 

@@ -1,10 +1,10 @@
 table,column,data_type,unique,start,end
-fact_session,fact_view_id,int,running,1,200
-fact_session,ts,timestamp,no,2022/06/02,2022/07/04
+fact_session,הדבר הזה,int,running,1,200
+fact_session,ts,timestamp,no,2022/06/06,2022/07/06
 fact_session,player_id,int,no,1,50
 fact_session,caretaker_id,int,no,1,50
 fact_session,activity,int,no,1,5
-fact_session,show_tags,bool,no,,
+fact_session,anything,bool,no,,
 ,,,,,
 another_table,table_id,int,running,1,20
 another_table,part_session,string,yes,uuid,
