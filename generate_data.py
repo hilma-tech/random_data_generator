@@ -223,14 +223,14 @@ def parse_data():
 
 def main():
     print("The program will take a couple seconds to generate the data please wait")
-    #try:
-    parse_data()
-    create_csv()
-    # except Exception as Argument:
-    #     print("An error has occured, please check the working directing for the error file to see what the error was")
-    #     f = open("error_file.txt", "w")
-    #     f.write(str(Argument))
-    #     f.close()
+    try:
+        parse_data()
+        create_csv()
+    except Exception as Argument:
+        print("An error has occured, please check the working directing for the error file to see what the error was")
+        f = open("error_file.txt", "w")
+        f.write(str(Argument))
+        f.close()
 
     
 
