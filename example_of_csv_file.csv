@@ -14,7 +14,7 @@ another_table,date,date,yes,2022/06/06,2022/07/06
 yet_another_table,col_1,int,running,1,10
 ,,,,,
 example,col_1,int,running,1,20
-example,gender,input,no,"male,females,other",
+example,gender,input,no,"הדבר הזה,הדבר הה,הדהזה",
 example,col_3,string,yes,uuid,
 example,col_4,timestamp,consecutive,2022/06/06,2022/07/08
 ,,,,,

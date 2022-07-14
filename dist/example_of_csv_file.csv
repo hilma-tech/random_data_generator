@@ -1,0 +1,25 @@
+table,column,data_type,unique,start,end
+fact_session,הדבר הזה,int,running,1,200
+fact_session,ts,timestamp,no,2022/06/06,2022/07/06
+fact_session,player_id,int,no,1,50
+fact_session,caretaker_id,int,no,1,50
+fact_session,activity,int,no,1,5
+fact_session,anything,bool,no,,
+,,,,,
+another_table,table_id,int,running,1,20
+another_table,part_session,string,yes,uuid,
+another_table,person,string,yes,name,
+another_table,date,date,yes,2022/06/06,2022/07/06
+,,,,,
+yet_another_table,col_1,int,running,1,10
+,,,,,
+example,col_1,int,running,1,20
+example,gender,input,no,"הדבר הזה,הדבר הה,הדהזה",
+example,col_3,string,yes,uuid,
+example,col_4,timestamp,consecutive,2022/06/06,2022/07/08
+,,,,,
+hello,thing_id,int,running,1,
+hello,hold_on,int,parent_id,20,
+hello,index_thing,int,index,1,5
+hello,other,bool,no,,
+hello,different,date,yes,2021/06/07,2022/06/07
