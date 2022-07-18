@@ -63,12 +63,12 @@ class DataTypeProvider(BaseProvider):
         # Dictionary that holds possible inputs from the user and makes them unique depending on if the user wants unique values
         # partial function is used so that when I call the function in the for loop below it will automatically send the argument
         switcher = {
-            "int": partial(fake.unique.random_int, min, max) if uniqueCell=="yes" else partial(fake.random_int, min, max),
-            "uuid": fake.unique.uuid4 if uniqueCell=="yes" else fake.uuid4,
-            "date": partial(fake.unique.date_between, startDate, endDate) if uniqueCell=="yes" 
+            "int": partial(fake.unique.random_int, min, max) if uniqueCell=="unique" else partial(fake.random_int, min, max),
+            "uuid": fake.unique.uuid4 if uniqueCell=="unique" else fake.uuid4,
+            "date": partial(fake.unique.date_between, startDate, endDate) if uniqueCell=="unique" 
                     else partial(consec_dates, temp_data, startDate) if uniqueCell=="consecutive" 
                     else partial(fake.date_between, startDate, endDate),
-            "timestamp": partial(fake.unique.date_time_between, startDate, endDate) if uniqueCell=="yes" 
+            "timestamp": partial(fake.unique.date_time_between, startDate, endDate) if uniqueCell=="unique" 
                     else partial(fake.date_time_between, startDate, endDate),
             "name": fake.first_name,
             "bool": fake.pybool
@@ -181,7 +181,7 @@ def parse_data():
     table_name = np.array(data['table'].values)
     header = np.array(data['column'].values)
     columnDataType = np.array(data['data_type'].values)
-    unique = np.array(data['unique'].values)
+    unique = np.array(data['order'].values)
     starter = np.array(data['start'].values)
     end = np.array(data['end'].values)
 
