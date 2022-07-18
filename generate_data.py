@@ -4,7 +4,6 @@ from functools import partial
 import datetime
 from faker import Faker
 import configparser
-import logging
 from faker.providers import BaseProvider
 
 def child_table_generate(numIDs, numIndx):
@@ -31,15 +30,16 @@ def child_table_generate(numIDs, numIndx):
 def consec_dates(datesArr, startDate): # adds 1 to the date 
     return datesArr[-1] + datetime.timedelta(days=1) if len(datesArr) != 0 else startDate
     
-def consec_datetimes(startDate, rows):
+def consec_datetimes(startDate, endDate, rows):
     fake = Faker()
     temp_time = []
     unix_start_time = datetime.datetime.timestamp(startDate) #convert it to unix timestamp to generate random times
     temp_time.append(datetime.datetime.fromtimestamp(unix_start_time))
     next_day = unix_start_time # generate random datetimes using unix time stamp since it is an integer and faster than using datetime library
+    diff_between_times = datetime.datetime.timestamp(endDate) - unix_start_time
+    time_generation_range = int(diff_between_times / rows)
     for _ in range(rows):
-        next_day += 60*60*24
-        next_day += fake.random_int(1, 86399) #this is how many seconds are in a day so it can generate between midnight and next midnight
+        next_day += fake.random_int(1, time_generation_range) #this is how many seconds are in a day so it can generate between midnight and next midnight
         temp_time.append(datetime.datetime.fromtimestamp(next_day))
     return temp_time
 
@@ -118,14 +118,12 @@ def create_csv():
             file_data.append([i for i in range(1, rows+1)]) # creates the column of id's dependent on the length of the random column lengths
             file_data.append(id_col)
             file_data.append(index_col)
-            rowStart = 3 # number that for loop starts at because this takes care of the first 3 rows 
         except:
             rows = int(end[j][0]) # gets the end number saying how many rows
             file_data.append([i for i in range(1, rows+1) ]) # creates a column based on how many rows user wants
-            rowStart = 1 # this takes care of the first row so we skip it
         
-        for i in range(rowStart,len(header[j])): # loop through each column and create the array that will have the random data
-
+        for i in range(1, len(header[j])): # loop through each column and create the array that will have the random data
+            if(unique[j][i].lower() == 'parent_id' or unique[j][i].lower() == 'index'): continue
             # Call necessary methods to get desire output       
             if(columnDataType[j][i].lower() == 'int'): # this is a range 
                 min = int(starter[j][i])
@@ -147,10 +145,7 @@ def create_csv():
                 year, month, day = map(int, end[j][i].split('/'))
                 endDate = datetime.datetime(year, month, day)
                 if(unique[j][i].lower()=='consecutive'): 
-                    if((endDate - startDate).days < rows): # if the number of days between the 2 dates is less than the number of rows quit
-                        print("Number of days is less than desired amount of rows for consecutive dates!")
-                        quit()
-                    file_data.append(consec_datetimes(startDate, rows))
+                    file_data.append(consec_datetimes(startDate, endDate, rows))
                 else: file_data.append(fake_data(columnDataType[j][i], rows, startDate, endDate, uniqueCell=unique[j][i].lower()))
 
             elif(columnDataType[j][i].lower() == 'date'): #separate dates and then call the method to generate the dates
@@ -220,7 +215,6 @@ def parse_data():
         starter[i] = starter[i][1:]
         end[i] = end[i][1:]
 
-
 def main():
     print("The program will take a couple seconds to generate the data please wait")
     try:
@@ -231,8 +225,6 @@ def main():
         f = open("error_file.txt", "w")
         f.write(str(Argument))
         f.close()
-
-    
 
 if __name__ == "__main__":
     main()
